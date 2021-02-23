@@ -12,9 +12,9 @@ cd bilibili-live-notificator
 
 ## -i: Bilibili room ID
 
-https://live.bilibili.com/<room ID>
+https://live.bilibili.com/＜room ID＞
 
-## -s TWITTER_API_KEY
+## -t TWITTER_API_KEY
 
 
 ## -w watching
