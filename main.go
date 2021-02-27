@@ -38,10 +38,11 @@ func main() {
 	}
 
 	app.Action = func(c *cli.Context) error {
-		roomInfo, err := bilibili.GetRoomInfo(c.String("room-id"))
+		roomInfo, err := bilibili.GetRoomInfo(c.String("room-id")) // TODO: watchモードでループする
 		if err != nil {
 			return err
 		}
+		// Twitterに投稿する
 		fmt.Println(roomInfo.Title)
 		return nil
 	}

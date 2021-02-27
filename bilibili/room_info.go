@@ -1,4 +1,4 @@
-package bilibili
+package main
 
 import (
 	"bilibili-live-notificator/client"
@@ -21,11 +21,12 @@ type RoomInfoResponse struct {
 	Data RoomInfo `json:"data"`
 }
 
+// TODO: テストコードを書く
 func GetRoomInfo(id string) (*RoomInfo, error) {
 	client, _ := client.NewClient(
 		"https://api.live.bilibili.com",
 		&http.Client{},
-		"string",
+		"string", // TODO: UAを設定する
 	)
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
