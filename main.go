@@ -1,17 +1,13 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
-	"time"
 
 	"github.com/urfave/cli/v2"
 
 	"bilibili-live-notificator/bilibili"
-	"bilibili-live-notificator/client"
 )
 
 func main() {
@@ -42,29 +38,11 @@ func main() {
 	}
 
 	app.Action = func(c *cli.Context) error {
-		client, _ := client.NewClient(
-			"https://api.live.bilibili.com",
-			&http.Client{},
-			"string",
-		)
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
-		httpRequest, err := client.NewRequest(ctx, "GET", "/room/v1/Room/get_info", "id="+c.String("room-id"), nil)
+		roomInfo, err := bilibili.GetRoomInfo(c.String("room-id"))
 		if err != nil {
 			return err
 		}
-
-		httpResponse, err := client.HTTPClient.Do(httpRequest)
-		if err != nil {
-			return err
-		}
-
-		var apiResponse bilibili.RoomInfoResponse
-		if err := client.DecodeBody(httpResponse, &apiResponse); err != nil {
-			return err
-		}
-		fmt.Println(apiResponse.Data.Title)
-
+		fmt.Println(roomInfo.Title)
 		return nil
 	}
 
