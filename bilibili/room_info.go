@@ -1,4 +1,4 @@
-package main
+package bilibili
 
 import (
 	"bilibili-live-notificator/client"
@@ -40,6 +40,7 @@ func GetRoomInfo(id string) (*RoomInfo, error) {
 		return nil, err
 	}
 
+	// TODO: レスポンスでRoomInfoが返ってこない場合はRoomIDなどが0のまま正常終了してしまうのでエラーを出す
 	var apiResponse RoomInfoResponse
 	if err := client.DecodeBody(httpResponse, &apiResponse); err != nil {
 		return nil, err
