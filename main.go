@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"io"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -43,19 +43,27 @@ func main() {
 
 	app.Action = func(c *cli.Context) error {
 		client, _ := client.NewClient(
-			"https://api.live.bilibili.com/room/v1/Room/get_info",
+			"https://api.live.bilibili.com",
 			&http.Client{},
 			"string",
 		)
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
-		httpRequest, _ := client.NewRequest(ctx, "GET", "?id=22159299&from=room", nil)
-		httpResponse, _ := client.HTTPClient.Do(httpRequest)
-		io.Copy(os.Stdout, httpResponse.Body)
+		httpRequest, err := client.NewRequest(ctx, "GET", "/room/v1/Room/get_info", "id="+c.String("room-id"), nil)
+		if err != nil {
+			return err
+		}
+
+		httpResponse, err := client.HTTPClient.Do(httpRequest)
+		if err != nil {
+			return err
+		}
+
 		var apiResponse bilibili.RoomInfoResponse
 		if err := client.DecodeBody(httpResponse, &apiResponse); err != nil {
 			return err
 		}
+		fmt.Println(apiResponse.Data.Title)
 
 		return nil
 	}
