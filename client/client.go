@@ -31,9 +31,10 @@ func NewClient(endpointURL string, httpClient *http.Client, userAgent string) (*
 	return client, nil
 }
 
-func (client *Client) NewRequest(ctx context.Context, method string, subPath string, body io.Reader) (*http.Request, error) {
+func (client *Client) NewRequest(ctx context.Context, method string, subPath string, query string, body io.Reader) (*http.Request, error) {
 	endpointURL := *client.EndpointURL
 	endpointURL.Path = path.Join(client.EndpointURL.Path, subPath)
+	endpointURL.RawQuery = query
 
 	req, err := http.NewRequest(method, endpointURL.String(), body)
 	if err != nil {
