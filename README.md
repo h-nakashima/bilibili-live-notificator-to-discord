@@ -16,8 +16,3 @@ https://live.bilibili.com/＜room ID＞
 
 ## -t TWITTER_API_KEY
 
-
-## -w watching
-
-Start the process and check it every few minutes.
-Once it detects starting live stream, it will not notify you until the live stream is finished.

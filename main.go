@@ -37,11 +37,6 @@ func main() {
 				Aliases:  []string{"k"},
 				Required: true,
 			},
-			&cli.BoolFlag{
-				Name:    "watching",
-				Aliases: []string{"w"},
-				Usage:   "Service mode",
-			},
 		},
 	}
 
@@ -54,12 +49,16 @@ func main() {
 		var config config
 		err = yaml.Unmarshal(file, &config)
 
-		roomInfo, err := bilibili.GetRoomInfo(c.String("room-id")) // TODO: watchモードでループする
+		// Get room info from bilibili
+		roomInfo, err := bilibili.GetRoomInfo(c.String("room-id"))
 		if err != nil {
 			return err
 		}
-		// Twitterに投稿する
-		twitter.PostTweet(config.Twitter, *roomInfo.Title, *roomInfo.RoomID, *roomInfo.ImageUrl)
+		// Post to Twitter
+		err = twitter.PostTweet(config.Twitter, *roomInfo.Title, *roomInfo.RoomID, *roomInfo.ImageUrl)
+		if err != nil {
+			return err
+		}
 		return nil
 	}
 
