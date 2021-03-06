@@ -21,7 +21,7 @@ type Keys struct {
 	} `yaml:"access"`
 }
 
-func PostTweet(keys Keys, title string, room_id int, imageUrl string) error {
+func PostTweet(keys Keys, tweetMessage string, title string, roomId int, imageUrl string) error {
 	config := oauth1.NewConfig(keys.Consumer.Key, keys.Consumer.Secret)
 	token := oauth1.NewToken(keys.Access.Key, keys.Access.Secret)
 	httpClient := config.Client(oauth1.NoContext, token)
@@ -38,7 +38,7 @@ func PostTweet(keys Keys, title string, room_id int, imageUrl string) error {
 		return err
 	}
 
-	_, _, err = client.Statuses.Update("Starting live streaming: \n"+title+" https://live.bilibili.com/"+strconv.Itoa(room_id), &twitter.StatusUpdateParams{
+	_, _, err = client.Statuses.Update(tweetMessage+"\n"+title+" https://live.bilibili.com/"+strconv.Itoa(roomId), &twitter.StatusUpdateParams{
 		MediaIds: []int64{media.MediaID},
 	})
 	if err != nil {
