@@ -3,7 +3,10 @@ package main
 import (
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"os"
+	"strconv"
+	"time"
 
 	"github.com/urfave/cli/v2"
 
@@ -70,6 +73,9 @@ func main() {
 				}
 			}
 			liveStatus = *roomInfo.LiveStatus
+			sleepingTime := 5 + rand.Intn(5)
+			log.Println("Sleep " + strconv.Itoa(sleepingTime) + "sec")
+			time.Sleep(time.Duration(sleepingTime) * time.Second)
 		}
 	}
 
