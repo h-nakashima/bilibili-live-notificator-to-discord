@@ -1,14 +1,21 @@
 package main
 
 import (
-	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 
 	"github.com/urfave/cli/v2"
 
 	"bilibili-live-notificator/bilibili"
+	"bilibili-live-notificator/twitter"
+
+	"gopkg.in/yaml.v2"
 )
+
+type config struct {
+	Twitter twitter.Keys `yaml:"twitter"`
+}
 
 func main() {
 
@@ -24,9 +31,9 @@ func main() {
 				Required: true,
 			},
 			&cli.StringFlag{
-				Name:     "twitter-api-key",
-				Usage:    "Twitter API key",
-				Aliases:  []string{"t"},
+				Name:     "api-keys-file",
+				Usage:    "API keys file",
+				Aliases:  []string{"k"},
 				Required: true,
 			},
 			&cli.BoolFlag{
@@ -38,12 +45,20 @@ func main() {
 	}
 
 	app.Action = func(c *cli.Context) error {
+		// Load API keys file
+		file, err := ioutil.ReadFile(c.String("api-keys-file"))
+		if err != nil {
+			panic(err)
+		}
+		var config config
+		err = yaml.Unmarshal(file, &config)
+
 		roomInfo, err := bilibili.GetRoomInfo(c.String("room-id")) // TODO: watchモードでループする
 		if err != nil {
 			return err
 		}
 		// Twitterに投稿する
-		fmt.Println(roomInfo.Title)
+		twitter.PostTweet(config.Twitter, *roomInfo.Title, *roomInfo.RoomID, *roomInfo.ImageUrl)
 		return nil
 	}
 

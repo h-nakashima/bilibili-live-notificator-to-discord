@@ -1,0 +1,7 @@
+twitter:
+  consumer:
+    key: "consumerKey"
+    secret: "consumerSecret"
+  access:
+    key: "accessToken"
+    secret: "accessSecret"

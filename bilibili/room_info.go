@@ -8,9 +8,10 @@ import (
 )
 
 type RoomInfo struct {
-	RoomID     int    `json:"room_id"`
-	LiveStatus int    `json:"live_status"`
-	Title      string `json:"title"`
+	RoomID     *int    `json:"room_id"`
+	LiveStatus *int    `json:"live_status,omitempty"`
+	Title      *string `json:"title"`
+	ImageUrl   *string `json:"user_cover"`
 }
 
 type RoomInfoRequest struct {
