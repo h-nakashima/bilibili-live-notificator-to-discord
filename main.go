@@ -18,7 +18,8 @@ type config struct {
 }
 
 func main() {
-	// TODO: xerrorsで各階層のエラーメッセージをするようにする
+	// TODO: Use xerrors
+	// TODO: Add test code
 
 	app := &cli.App{
 		Name:    "bilibili-live-notificator",
@@ -49,17 +50,27 @@ func main() {
 		var config config
 		err = yaml.Unmarshal(file, &config)
 
-		// Get room info from bilibili
-		roomInfo, err := bilibili.GetRoomInfo(c.String("room-id"))
-		if err != nil {
-			return err
+		liveStatus := -1
+
+		for {
+			// Get room info from bilibili
+			roomInfo, err := bilibili.GetRoomInfo(c.String("room-id"))
+			if err != nil {
+				return err
+			}
+			if liveStatus != *roomInfo.LiveStatus {
+				if *roomInfo.LiveStatus == 1 {
+					// Post to Twitter
+					err = twitter.PostTweet(config.Twitter, *roomInfo.Title, *roomInfo.RoomID, *roomInfo.ImageUrl)
+					if err != nil {
+						return err
+					}
+				} else {
+					log.Println("Finish")
+				}
+			}
+			liveStatus = *roomInfo.LiveStatus
 		}
-		// Post to Twitter
-		err = twitter.PostTweet(config.Twitter, *roomInfo.Title, *roomInfo.RoomID, *roomInfo.ImageUrl)
-		if err != nil {
-			return err
-		}
-		return nil
 	}
 
 	err := app.Run(os.Args)
