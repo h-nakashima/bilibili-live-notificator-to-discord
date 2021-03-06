@@ -18,6 +18,7 @@ type config struct {
 }
 
 func main() {
+	// TODO: xerrorsで各階層のエラーメッセージをするようにする
 
 	app := &cli.App{
 		Name:    "bilibili-live-notificator",
