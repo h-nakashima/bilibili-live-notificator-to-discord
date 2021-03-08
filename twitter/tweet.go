@@ -29,26 +29,30 @@ func PostTweet(keys Keys, tweetMessage string, title string, roomId int, imageUr
 	// Twitter client
 	client := twitter.NewClient(httpClient)
 
-	buf, err := convertBuffer(imageUrl)
+	buf, err := getCoverImage(imageUrl)
 	if err != nil {
-		return err
-	}
-	media, _, err := client.Media.Upload(buf.Bytes(), "tweet_image")
-	if err != nil {
-		return err
-	}
+		_, _, err = client.Statuses.Update(tweetMessage+"\n"+title+" https://live.bilibili.com/"+strconv.Itoa(roomId), nil)
+		if err != nil {
+			return err
+		}
+	} else {
+		media, _, err := client.Media.Upload(buf.Bytes(), "tweet_image")
+		if err != nil {
+			return err
+		}
 
-	_, _, err = client.Statuses.Update(tweetMessage+"\n"+title+" https://live.bilibili.com/"+strconv.Itoa(roomId), &twitter.StatusUpdateParams{
-		MediaIds: []int64{media.MediaID},
-	})
-	if err != nil {
-		return err
+		_, _, err = client.Statuses.Update(tweetMessage+"\n"+title+" https://live.bilibili.com/"+strconv.Itoa(roomId), &twitter.StatusUpdateParams{
+			MediaIds: []int64{media.MediaID},
+		})
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
-func convertBuffer(imageUrl string) (*bytes.Buffer, error) {
+func getCoverImage(imageUrl string) (*bytes.Buffer, error) {
 	resp, err := http.Get(imageUrl)
 	if err != nil {
 		return nil, err
