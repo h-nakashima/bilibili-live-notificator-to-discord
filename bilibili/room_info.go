@@ -5,6 +5,8 @@ import (
 	"context"
 	"net/http"
 	"time"
+
+	"golang.org/x/xerrors"
 )
 
 type RoomInfo struct {
@@ -33,18 +35,18 @@ func GetRoomInfo(id string) (*RoomInfo, error) {
 	defer cancel()
 	httpRequest, err := client.NewRequest(ctx, "GET", "/room/v1/Room/get_info", "id="+id, nil)
 	if err != nil {
-		return nil, err
+		return nil, xerrors.Errorf("failed to create new request: %w", err)
 	}
 
 	httpResponse, err := client.HTTPClient.Do(httpRequest)
 	if err != nil {
-		return nil, err
+		return nil, xerrors.Errorf("failed to do request: %w", err)
 	}
 
 	// TODO: レスポンスでRoomInfoが返ってこない場合はRoomIDなどが0のまま正常終了してしまうのでエラーを出す
 	var apiResponse RoomInfoResponse
 	if err := client.DecodeBody(httpResponse, &apiResponse); err != nil {
-		return nil, err
+		return nil, xerrors.Errorf("failed to decode room info response: %w", err)
 	}
 
 	return &apiResponse.Data, nil

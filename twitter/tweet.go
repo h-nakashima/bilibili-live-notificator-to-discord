@@ -8,6 +8,7 @@ import (
 
 	"github.com/dghubble/go-twitter/twitter"
 	"github.com/dghubble/oauth1"
+	"golang.org/x/xerrors"
 )
 
 type Keys struct {
@@ -31,21 +32,22 @@ func PostTweet(keys Keys, tweetMessage string, title string, roomId int, imageUr
 
 	buf, err := getCoverImage(imageUrl)
 	if err != nil {
+		// TODO: mockにするか、テストアカウントをつくるかする
 		_, _, err = client.Statuses.Update(tweetMessage+"\n"+title+" https://live.bilibili.com/"+strconv.Itoa(roomId), nil)
 		if err != nil {
-			return err
+			return xerrors.Errorf("twitter.PostTweet error occurred: %w", err)
 		}
 	} else {
 		media, _, err := client.Media.Upload(buf.Bytes(), "tweet_image")
 		if err != nil {
-			return err
+			return xerrors.Errorf("twitter.PostTweet error occurred: %w", err)
 		}
 
 		_, _, err = client.Statuses.Update(tweetMessage+"\n"+title+" https://live.bilibili.com/"+strconv.Itoa(roomId), &twitter.StatusUpdateParams{
 			MediaIds: []int64{media.MediaID},
 		})
 		if err != nil {
-			return err
+			return xerrors.Errorf("twitter.PostTweet error occurred: %w", err)
 		}
 	}
 
@@ -55,12 +57,12 @@ func PostTweet(keys Keys, tweetMessage string, title string, roomId int, imageUr
 func getCoverImage(imageUrl string) (*bytes.Buffer, error) {
 	resp, err := http.Get(imageUrl)
 	if err != nil {
-		return nil, err
+		return nil, xerrors.Errorf("twitter.getCoverImage error occurred: %w", err)
 	}
 	defer resp.Body.Close()
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return nil, xerrors.Errorf("twitter.getCoverImage error occurred: %w", err)
 	}
 
 	buf := bytes.NewBuffer(data)

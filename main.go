@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -9,6 +10,7 @@ import (
 	"time"
 
 	"github.com/urfave/cli/v2"
+	"golang.org/x/xerrors"
 
 	"bilibili-live-notificator/bilibili"
 	"bilibili-live-notificator/twitter"
@@ -48,7 +50,7 @@ func main() {
 		// Load API keys file
 		file, err := ioutil.ReadFile(c.String("api-keys-file"))
 		if err != nil {
-			panic(err)
+			return xerrors.Errorf("failed to read API keys file: %w", err)
 		}
 		var config config
 		err = yaml.Unmarshal(file, &config)
@@ -58,7 +60,7 @@ func main() {
 		for {
 			roomInfo, err := bilibili.GetRoomInfo(c.String("room-id"))
 			if err != nil {
-				return err
+				return xerrors.Errorf("failed to get room info: %w", err)
 			}
 			if liveStatus != *roomInfo.LiveStatus {
 				if *roomInfo.LiveStatus == 1 {
@@ -67,7 +69,7 @@ func main() {
 					err = twitter.PostTweet(config.Twitter, "Finished live streaming: ", *roomInfo.Title, *roomInfo.RoomID, *roomInfo.ImageUrl)
 				}
 				if err != nil {
-					return err
+					return xerrors.Errorf("failed to tweet live status: %w", err)
 				}
 			}
 			liveStatus = *roomInfo.LiveStatus
@@ -79,6 +81,7 @@ func main() {
 
 	err := app.Run(os.Args)
 	if err != nil {
+		fmt.Printf("%+v\n", err)
 		log.Fatal(err)
 	}
 }

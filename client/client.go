@@ -8,7 +8,7 @@ import (
 	"net/url"
 	"path"
 
-	"github.com/pkg/errors"
+	"golang.org/x/xerrors"
 )
 
 type Client struct {
@@ -20,7 +20,7 @@ type Client struct {
 func NewClient(endpointURL string, httpClient *http.Client, userAgent string) (*Client, error) {
 	parsedURL, err := url.ParseRequestURI(endpointURL)
 	if err != nil {
-		return nil, errors.Wrapf(err, "failed to parse url: %s", endpointURL)
+		return nil, xerrors.Errorf("failed to parse url: %s: %w", endpointURL, err)
 	}
 
 	client := &Client{
@@ -32,13 +32,14 @@ func NewClient(endpointURL string, httpClient *http.Client, userAgent string) (*
 }
 
 func (client *Client) NewRequest(ctx context.Context, method string, subPath string, query string, body io.Reader) (*http.Request, error) {
+	// TODO: endpoint"URL"ではないので名前を変更
 	endpointURL := *client.EndpointURL
 	endpointURL.Path = path.Join(client.EndpointURL.Path, subPath)
 	endpointURL.RawQuery = query
 
 	req, err := http.NewRequest(method, endpointURL.String(), body)
 	if err != nil {
-		return nil, err
+		return nil, xerrors.Errorf("failed to create new request: %s: %w", endpointURL.String(), err)
 	}
 
 	req = req.WithContext(ctx)
