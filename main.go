@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -23,7 +22,6 @@ type config struct {
 }
 
 func main() {
-	// TODO: Use xerrors
 	// TODO: Add test code
 
 	app := &cli.App{
@@ -81,7 +79,6 @@ func main() {
 
 	err := app.Run(os.Args)
 	if err != nil {
-		fmt.Printf("%+v\n", err)
-		log.Fatal(err)
+		log.Printf("%+v\n", err)
 	}
 }

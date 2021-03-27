@@ -43,7 +43,6 @@ func GetRoomInfo(id string) (*RoomInfo, error) {
 		return nil, xerrors.Errorf("failed to do request: %w", err)
 	}
 
-	// TODO: レスポンスでRoomInfoが返ってこない場合はRoomIDなどが0のまま正常終了してしまうのでエラーを出す
 	var apiResponse RoomInfoResponse
 	if err := client.DecodeBody(httpResponse, &apiResponse); err != nil {
 		return nil, xerrors.Errorf("failed to decode room info response: %w", err)
