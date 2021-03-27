@@ -58,7 +58,7 @@ func main() {
 		for {
 			roomInfo, err := bilibili.GetRoomInfo(c.String("room-id"))
 			if err != nil {
-				return xerrors.Errorf("failed to get room info: %w", err)
+				log.Printf("%+v\n", err)
 			}
 			if liveStatus != *roomInfo.LiveStatus {
 				if *roomInfo.LiveStatus == 1 {
@@ -67,7 +67,7 @@ func main() {
 					err = twitter.PostTweet(config.Twitter, "Finished live streaming: ", *roomInfo.Title, *roomInfo.RoomID, *roomInfo.ImageUrl)
 				}
 				if err != nil {
-					return xerrors.Errorf("failed to tweet live status: %w", err)
+					log.Printf("%+v\n", err)
 				}
 			}
 			liveStatus = *roomInfo.LiveStatus
