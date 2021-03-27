@@ -32,7 +32,6 @@ func PostTweet(keys Keys, tweetMessage string, title string, roomId int, imageUr
 
 	buf, err := getCoverImage(imageUrl)
 	if err != nil {
-		// TODO: mockにするか、テストアカウントをつくるかする
 		_, _, err = client.Statuses.Update(tweetMessage+"\n"+title+" https://live.bilibili.com/"+strconv.Itoa(roomId), nil)
 		if err != nil {
 			return xerrors.Errorf("twitter.PostTweet error occurred: %w", err)

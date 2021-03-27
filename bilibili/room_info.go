@@ -29,7 +29,7 @@ func GetRoomInfo(id string) (*RoomInfo, error) {
 	client, _ := client.NewClient(
 		"https://api.live.bilibili.com",
 		&http.Client{},
-		"string", // TODO: UAを設定する
+		"bilibili-live-notificator",
 	)
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
