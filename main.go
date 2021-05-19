@@ -59,18 +59,19 @@ func main() {
 			roomInfo, err := bilibili.GetRoomInfo(c.String("room-id"))
 			if err != nil {
 				log.Printf("%+v\n", err)
-			}
-			if liveStatus != *roomInfo.LiveStatus {
-				if *roomInfo.LiveStatus == 1 {
-					err = twitter.PostTweet(config.Twitter, "Started live streaming: ", *roomInfo.Title, *roomInfo.RoomID, *roomInfo.ImageUrl)
-				} else {
-					err = twitter.PostTweet(config.Twitter, "Finished live streaming: ", *roomInfo.Title, *roomInfo.RoomID, *roomInfo.ImageUrl)
+			} else {
+				if liveStatus != *roomInfo.LiveStatus {
+					if *roomInfo.LiveStatus == 1 {
+						err = twitter.PostTweet(config.Twitter, "Started live streaming: ", *roomInfo.Title, *roomInfo.RoomID, *roomInfo.ImageUrl)
+					} else {
+						err = twitter.PostTweet(config.Twitter, "Finished live streaming: ", *roomInfo.Title, *roomInfo.RoomID, *roomInfo.ImageUrl)
+					}
+					if err != nil {
+						log.Printf("%+v\n", err)
+					}
 				}
-				if err != nil {
-					log.Printf("%+v\n", err)
-				}
+				liveStatus = *roomInfo.LiveStatus
 			}
-			liveStatus = *roomInfo.LiveStatus
 			sleepingTime := 5 + rand.Intn(5)
 			log.Println("Sleep " + strconv.Itoa(sleepingTime) + "sec")
 			time.Sleep(time.Duration(sleepingTime) * time.Second)

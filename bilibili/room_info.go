@@ -47,6 +47,8 @@ func GetRoomInfo(id string) (*RoomInfo, error) {
 	if err := client.DecodeBody(httpResponse, &apiResponse); err != nil {
 		return nil, xerrors.Errorf("failed to decode room info response: %w", err)
 	}
-
+	if apiResponse.Data.LiveStatus == nil {
+		return nil, xerrors.Errorf("failed to get live status: nil")
+	}
 	return &apiResponse.Data, nil
 }
