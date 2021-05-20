@@ -52,10 +52,21 @@ func main() {
 		}
 		var config config
 		err = yaml.Unmarshal(file, &config)
+		if err != nil {
+			return xerrors.Errorf("failed to parse API keys file: %w", err)
+		}
 
-		liveStatus := -1
+		roomInfo, err := bilibili.GetRoomInfo(c.String("room-id"))
+		liveStatus := *roomInfo.LiveStatus
+		if err != nil {
+			return xerrors.Errorf("failed to get live-status from bilibili: %w", err)
+		}
 
 		for {
+			sleepingTime := 5 + rand.Intn(5)
+			log.Println("Sleep " + strconv.Itoa(sleepingTime) + "sec")
+			time.Sleep(time.Duration(sleepingTime) * time.Second)
+
 			roomInfo, err := bilibili.GetRoomInfo(c.String("room-id"))
 			if err != nil {
 				log.Printf("%+v\n", err)
@@ -72,9 +83,6 @@ func main() {
 				}
 				liveStatus = *roomInfo.LiveStatus
 			}
-			sleepingTime := 5 + rand.Intn(5)
-			log.Println("Sleep " + strconv.Itoa(sleepingTime) + "sec")
-			time.Sleep(time.Duration(sleepingTime) * time.Second)
 		}
 	}
 
