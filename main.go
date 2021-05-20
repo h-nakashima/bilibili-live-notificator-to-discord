@@ -27,7 +27,7 @@ func main() {
 	app := &cli.App{
 		Name:    "bilibili-live-notificator",
 		Usage:   "It detects starting the live streaming on Bilibili and notifies a Twitter.",
-		Version: "0.0.5",
+		Version: "0.0.6",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:     "room-id",
