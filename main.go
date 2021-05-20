@@ -27,7 +27,7 @@ func main() {
 	app := &cli.App{
 		Name:    "bilibili-live-notificator",
 		Usage:   "It detects starting the live streaming on Bilibili and notifies a Twitter.",
-		Version: "0.0.3",
+		Version: "0.0.5",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:     "room-id",
@@ -62,9 +62,9 @@ func main() {
 			} else {
 				if liveStatus != *roomInfo.LiveStatus {
 					if *roomInfo.LiveStatus == 1 {
-						err = twitter.PostTweet(config.Twitter, "Started live streaming: ", *roomInfo.Title, *roomInfo.RoomID, *roomInfo.ImageUrl)
+						err = twitter.PostTweet(config.Twitter, "Started live streaming at "+time.Now().Format("15:04:05 MST: "), *roomInfo.Title, *roomInfo.RoomID, *roomInfo.ImageUrl)
 					} else {
-						err = twitter.PostTweet(config.Twitter, "Finished live streaming: ", *roomInfo.Title, *roomInfo.RoomID, *roomInfo.ImageUrl)
+						err = twitter.PostTweet(config.Twitter, "Finished live streaming at "+time.Now().Format("15:04:05 MST: "), *roomInfo.Title, *roomInfo.RoomID, *roomInfo.ImageUrl)
 					}
 					if err != nil {
 						log.Printf("%+v\n", err)
