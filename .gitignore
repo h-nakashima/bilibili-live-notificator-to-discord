@@ -16,6 +16,22 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
-
 api_keys_config/*yml
 main
+
+### https://raw.github.com/github/gitignore/8ea9c647018521ab2a9c78d630a2fb6579e16d37/Global/VisualStudioCode.gitignore
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+
+# Local History for Visual Studio Code
+.history/
+
+# Built Visual Studio Code Extensions
+*.vsix
+
+
