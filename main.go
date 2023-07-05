@@ -25,9 +25,9 @@ func main() {
 	// TODO: Add test code
 
 	app := &cli.App{
-		Name:    "bilibili-live-notificator",
-		Usage:   "It detects starting the live streaming on Bilibili and notifies a Discord.",
-		Version: "0.0.5",
+		Name:    "bilibili-live-notificator-to-discord",
+		Usage:   "This application detects the start of live streaming on Bilibili and sends notifications to Twitter.",
+		Version: "0.0.1",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:     "room-id",
@@ -71,7 +71,7 @@ func main() {
 			if err != nil {
 				log.Printf("%+v\n", err)
 			} else {
-				if liveStatus == *roomInfo.LiveStatus {
+				if liveStatus != *roomInfo.LiveStatus {
 					if *roomInfo.LiveStatus == 1 {
 						err = discord.PostDiscord(config.Discord, "Started live streaming at "+time.Now().Format("15:04:05 MST: "), *roomInfo.Title, *roomInfo.RoomID, *roomInfo.ImageUrl)
 					} else {
