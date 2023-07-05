@@ -1,4 +1,4 @@
-# bilibili-live-notificator
+# bilibili-live-notificator-to-discord
 
 This application detects the start of live streaming on Bilibili and sends notifications to Twitter.
 
